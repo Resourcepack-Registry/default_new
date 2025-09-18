@@ -16,44 +16,54 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
 
-      - name: 'Run assets generation loop'
-        env:
-          APP_ID: ${{ secrets.APP_ID }}
-          APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          get_token() {
-            echo "🔑 Generating fresh GitHub App token..."
-            token=$(gh api \
-              --method POST \
-              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              -H "Accept: application/vnd.github+json" \
-              /app/installations/${{ secrets.APP_INSTALLATION_ID }}/access_tokens \
-              --jq '.token')
-            export GH_TOKEN="$token"
-          }
+      - name: 'Find installation ID'
+        id: installation
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const installations = await github.request("GET /app/installations");
+            console.log(installations.data[0].id);
+            core.setOutput("id", installations.data[0].id);
 
-          versions='${{ inputs.versions }}'
-          for version in $(echo "$versions" | jq -r '.[]'); do
-            get_token
-            echo "🚀 Triggering workflow for version \"$version\""
-            gh workflow run generate_assets.yml \
-              --repo "$REPOSITORY" \
-              -f version="$version"
+      # - name: 'Run assets generation loop'
+      #   env:
+      #     APP_ID: ${{ secrets.APP_ID }}
+      #     APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+      #     REPOSITORY: ${{ github.repository }}
+      #   run: |
+      #     get_token() {
+      #       echo "🔑 Generating fresh GitHub App token..."
+      #       token=$(gh api \
+      #         --method POST \
+      #         -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+      #         -H "Accept: application/vnd.github+json" \
+      #         /app/installations/${{ secrets.APP_INSTALLATION_ID }}/access_tokens \
+      #         --jq '.token')
+      #       export GH_TOKEN="$token"
+      #     }
 
-            sleep 5
-            run_id=$(gh run list --workflow="generate_assets.yml" --json databaseId --jq '.[0].databaseId')
+      #     versions='${{ inputs.versions }}'
+      #     for version in $(echo "$versions" | jq -r '.[]'); do
+      #       get_token
+      #       echo "🚀 Triggering workflow for version \"$version\""
+      #       gh workflow run generate_assets.yml \
+      #         --repo "$REPOSITORY" \
+      #         -f version="$version"
 
-            echo "⏳ Waiting for run $run_id to complete..."
-            until gh run watch "$run_id" --compact --exit-status; do
-              exit_code=$?
-              if [ $exit_code -eq 1 ]; then
-                echo "⚠️ Authentication failed, refreshing token..."
-                get_token
-                continue
-              else
-                echo "❌ Run failed with exit code $exit_code"
-                exit $exit_code
-              fi
-            done
-          done
+      #       sleep 5
+      #       run_id=$(gh run list --workflow="generate_assets.yml" --json databaseId --jq '.[0].databaseId')
+
+      #       echo "⏳ Waiting for run $run_id to complete..."
+      #       until gh run watch "$run_id" --compact --exit-status; do
+      #         exit_code=$?
+      #         if [ $exit_code -eq 1 ]; then
+      #           echo "⚠️ Authentication failed, refreshing token..."
+      #           get_token
+      #           continue
+      #         else
+      #           echo "❌ Run failed with exit code $exit_code"
+      #           exit $exit_code
+      #         fi
+      #       done
+      #     done
