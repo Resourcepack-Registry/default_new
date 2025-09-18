@@ -13,13 +13,22 @@ jobs:
     name: 'Run generate_assets.yml'
     runs-on: ubuntu-24.04
     steps:
+      - name: 'Generate GitHub App token'
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: 'Checkout repository'
         uses: actions/checkout@v4
 
       - name: 'Run assets generation loop'
         env:
+          GL_TOKEN: ${{ steps.app-token.outputs.token }}
           APP_ID: ${{ secrets.APP_ID }}
           APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+          APP_INSTALLATION_ID: ${{ steps.app-token.outputs.installation-id }}
           REPOSITORY: ${{ github.repository }}
         run: |
           get_token() {
