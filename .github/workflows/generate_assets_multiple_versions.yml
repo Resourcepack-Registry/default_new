@@ -25,7 +25,7 @@ jobs:
 
       - name: 'Run assets generation loop'
         env:
-          GL_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           APP_ID: ${{ secrets.APP_ID }}
           APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
           APP_INSTALLATION_ID: ${{ steps.app-token.outputs.installation-id }}
