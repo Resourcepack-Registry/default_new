@@ -26,23 +26,10 @@ jobs:
       - name: 'Run assets generation loop'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          APP_ID: ${{ secrets.APP_ID }}
-          APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
-          APP_INSTALLATION_ID: ${{ steps.app-token.outputs.installation-id }}
           REPOSITORY: ${{ github.repository }}
         run: |
           versions='${{ inputs.versions }}'
           for version in $(echo "$versions" | jq -r '.[]'); do
-            echo "Generating fresh app token..."
-            token=$(gh api \
-              --method POST \
-              -H "Authorization: Bearer $(npx @actions/github-app-token --appId "$APP_ID" --privateKey "$APP_PRIVATE_KEY")" \
-              -H "Accept: application/vnd.github+json" \
-              /app/installations/$APP_INSTALLATION_ID/access_tokens \
-              --jq '.token')
-            
-            export GH_TOKEN="$token"
-            
             echo "Triggering workflow for version \"$version\""
             gh workflow run generate_assets.yml \
               --repo $REPOSITORY \
