@@ -16,15 +16,16 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
 
-      - name: 'Find installation ID'
-        id: installation
-        uses: actions/github-script@v7
+      - name: 'Generate GitHub App token'
+        id: app-token
+        uses: actions/create-github-app-token@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const installations = await github.request("GET /app/installations");
-            console.log(installations.data[0].id);
-            core.setOutput("id", installations.data[0].id);
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      
+      - name: Debug installation id
+        run: |
+          echo "Installation ID: ${{ steps.app-token.outputs.installation-id }}"
 
       # - name: 'Run assets generation loop'
       #   env:
