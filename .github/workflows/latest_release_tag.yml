@@ -5,4 +5,4 @@ on:
 
 jobs:
   tag:
-    uses: ''
+    uses: './.github/workflows/latest_release_tag.yml'
