@@ -59,5 +59,8 @@ jobs:
             sleep 5
             run_id=$(gh run list --workflow="generate_assets.yml" --json databaseId --jq '.[0].databaseId')
             echo "Waiting for run $run_id to complete..."
-            gh run watch "$run_id" --compact --exit-status
+            
+            gh run watch "$run_id" --compact --exit-status > /dev/null 2>&1
+
+            echo "Run $run_id done!"
           done
