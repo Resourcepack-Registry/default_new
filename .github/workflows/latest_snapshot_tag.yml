@@ -1,4 +1,4 @@
-name: 'Latest Snapshot'
+name: 'Snapshot'
 
 on:
   status: {}
