@@ -38,6 +38,8 @@ jobs:
           
           for version in $(echo "$versions" | jq -r '.[]'); do
             echo "Version: \"$version\""
+
+            gh token generate --help
             
             echo "Generating installation token"
             GH_TOKEN=$(gh token generate --base64-key $(printf "%s" $APP_PRIVATE_KEY | base64) --app-id $APP_ID --installation-id $APP_INSTALLATION_ID)
