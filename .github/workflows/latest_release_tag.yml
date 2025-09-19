@@ -1,4 +1,4 @@
-name: 'Latest Release'
+name: 'Latest Release: 1.21.8'
 
 on:
   status: {}
