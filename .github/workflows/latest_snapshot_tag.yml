@@ -1,0 +1,8 @@
+name: 'Latest Snapshot'
+
+on:
+  status: {}
+
+jobs:
+  tag:
+    uses: './.github/workflows/latest_release_tag.yml'
