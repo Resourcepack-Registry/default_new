@@ -40,7 +40,7 @@ jobs:
             echo "Version: \"$version\""
             
             echo "Generating installation token"
-            GH_TOKEN=$(gh token --app-id $APP_ID --private-key $APP_PRIVATE_KEY --installation-id $APP_INSTALLATION_ID)
+            GH_TOKEN=$(gh token generate --key $APP_PRIVATE_KEY --app-id $APP_ID --installation-id $APP_INSTALLATION_ID)
             export GH_TOKEN="$GH_TOKEN"
             
             echo "Triggering workflow"
