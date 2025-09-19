@@ -46,7 +46,7 @@ jobs:
               gh token generate \
                 --app-id "$APP_ID" \
                 --installation-id "$APP_INSTALLATION_ID" \
-                --base64-key '$(printf "%s" "$APP_PRIVATE_KEY" | base64)' \
+                --base64-key $(printf "%s" "$APP_PRIVATE_KEY" | base64) \
                 --token-only \
             )
             export GH_TOKEN="$GH_TOKEN"
