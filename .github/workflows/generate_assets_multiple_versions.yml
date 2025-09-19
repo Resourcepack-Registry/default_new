@@ -28,7 +28,7 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           APP_ID: ${{ secrets.APP_ID }}
           APP_INSTALLATION_ID: ${{ secrets.APP_INSTALLATION_ID }}
-          PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+          APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
           REPOSITORY: ${{ github.repository }}
 
         run: |
@@ -40,7 +40,7 @@ jobs:
             echo "Version: \"$version\""
             
             echo "Generating installation token"
-            GH_TOKEN=$(gh token generate --key $APP_PRIVATE_KEY --app-id $APP_ID --installation-id $APP_INSTALLATION_ID)
+            GH_TOKEN=$(gh token generate --base64-key $(printf "%s" $APP_PRIVATE_KEY | base64) --app-id $APP_ID --installation-id $APP_INSTALLATION_ID)
             export GH_TOKEN="$GH_TOKEN"
             
             echo "Triggering workflow"
