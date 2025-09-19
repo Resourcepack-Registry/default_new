@@ -40,13 +40,15 @@ jobs:
             echo "Version: \"$version\""
             
             echo "Generating installation token"
+            echo "$APP_PRIVATE_KEY" > private-key.pem
             GH_TOKEN=$(\
               gh token generate \
                 --app-id "$APP_ID" \
                 --installation-id "$APP_INSTALLATION_ID" \
-                --base64-key $(printf "%s" "$APP_PRIVATE_KEY" | base64) \
+                --key "private-key.pem" \
                 --token-only \
             )
+            rm private-key.pem
             export GH_TOKEN="$GH_TOKEN"
             
             echo "Triggering workflow"
