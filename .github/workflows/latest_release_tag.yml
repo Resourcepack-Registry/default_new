@@ -5,4 +5,4 @@ on:
 
 jobs:
   tag:
-    runs-on: ubuntu-latest
+    uses: ''
