@@ -1,4 +1,4 @@
-name: 'Snapshot'
+name: 'Latest Release: 1.21.9-pre1  '
 
 on:
   status: {}
