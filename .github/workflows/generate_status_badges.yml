@@ -50,7 +50,7 @@ jobs:
 
       - name: 'Generate Badge'
         id: 'generate-badge'
-        uses: loat-dev/action-badge@latest
+        uses: loat-dev/action-badge@v1
         with:
           icon: 'tag'
           label-text: ${{ inputs.prefix }}
