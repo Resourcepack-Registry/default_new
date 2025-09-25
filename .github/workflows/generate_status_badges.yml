@@ -1,10 +1,13 @@
-# This is a basic workflow to help you get started with Actions
-
-name: 'Generate status badges'
+name: 'Generate status badge'
+env:
+  BADGE_BRANCH: 'badge'
 
 on:
   workflow_call:
     inputs:
+      name:
+        type: string
+        
       prefix:
         type: string
         
@@ -16,5 +19,51 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 'Generate GitHub App token'
+        id: 'app-token'
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: 'Configure GIT'
+        run: |
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ secrets.APP_USER_ID }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+
+      - name: 'Checkout repository'
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ env.BADGE_BRANCH }}
+
+      - name: 'Generate Badge'
+        id: 'generate-badge'
+        uses: loat-dev/action-badge@latest
+        with:
+          icon: 'tag'
+          label-text: ${{ inputs.prefix }}
+          state-text: ${{ inputs.suffix }}
+
+      - name: 'Commit and push badge'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+        run: |
+          echo -e '${{ steps.generate-badge.outputs.svg-text }}' > ${{ inputs.name }}
+          
+          COMMIT_MESSAGE="Update badge (${{ inputs.name }})"
+          
+          echo "Commit Message: \"$COMMIT_MESSAGE\""
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "$COMMIT_MESSAGE"
+          fi
+
+          git push origin $BADGE_BRANCH
+
+      
 
