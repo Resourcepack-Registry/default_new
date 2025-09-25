@@ -1,8 +1,0 @@
-name: 'Latest Release: 1.21.8  '
-
-on:
-  status: {}
-
-jobs:
-  tag:
-    uses: './.github/workflows/latest_release_tag.yml'
