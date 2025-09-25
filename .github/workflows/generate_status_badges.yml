@@ -3,6 +3,17 @@ env:
   BADGE_BRANCH: 'badge'
 
 on:
+  workflow_dispatch:
+    inputs:
+      name:
+        type: string
+        
+      prefix:
+        type: string
+        
+      suffix:
+        type: string
+
   workflow_call:
     inputs:
       name:
