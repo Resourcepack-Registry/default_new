@@ -61,27 +61,27 @@ jobs:
           label-text: ${{ inputs.prefix }}
           state-text: ${{ inputs.suffix }}
 
-      - name: 'Commit and push badge'
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      # - name: 'Commit and push badge'
+      #   env:
+      #     GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
-        run: |
-          BADGE_FILE="${{ inputs.name }}.svg"
+      #   run: |
+      #     BADGE_FILE="${{ inputs.name }}.svg"
           
-          echo -e '${{ steps.generate-badge.outputs.svg-text }}' > $BADGE_FILE
+      #     echo -e '${{ steps.generate-badge.outputs.svg-text }}' > $BADGE_FILE
           
-          COMMIT_MESSAGE="Update badge ($BADGE_FILE)"
+      #     COMMIT_MESSAGE="Update badge ($BADGE_FILE)"
           
-          echo "Commit Message: \"$COMMIT_MESSAGE\""
+      #     echo "Commit Message: \"$COMMIT_MESSAGE\""
 
-          git add -A
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "$COMMIT_MESSAGE"
-          fi
+      #     git add -A
+      #     if git diff --cached --quiet; then
+      #       echo "No changes to commit."
+      #     else
+      #       git commit -m "$COMMIT_MESSAGE"
+      #     fi
 
-          git push origin $BADGE_BRANCH
+      #     git push origin $BADGE_BRANCH
 
       
 
