@@ -52,7 +52,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ steps.app-token.outputs.token }}
-          ref: ${{ env.BADGE_BRANCH }}
 
       - name: 'Generate Badge'
         id: 'generate-badge'
